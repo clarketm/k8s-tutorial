@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mycronjob
+  labels:
+    app: mycronjob
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: mypod
+            image: ubuntu
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: VAR
+              valueFrom:
+                configMapKeyRef:
+                  name: myconfigmap
+                  key: val
+            command:
+            - bash
+            - -c
+            #language=bash
+            args:
+            - |
+              echo "$VAR"
+              sleep 5
+              echo "$VAR"
